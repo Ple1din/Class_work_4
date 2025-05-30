@@ -1,42 +1,48 @@
 #include "PersonalizedMassage.h"
 
-PerzonalizedMassage::PerzonalizedMassage(string name, int duration, float price, string hour, string clientType)
-    : ServiceSPA(name, duration, price) {
-    this->appointmentHour = hour;
-    this->clientType = clientType;
-}
+PerzonalizedMassage::PerzonalizedMassage(std::string name, int duration, float price, std::string hour, std::string clientType)
+    : ServiceSPA(name, duration, price), appointmentHour(hour), clientType(clientType) {}
 
 float PerzonalizedMassage::calculateFinalPrice() {
     float finalPrice = basePrice;
-
-    // Extra charge if duration exceeds 60 minutes
     if (duration > 60) {
         finalPrice += 200;
     }
-
-    // 10% discount for returning customers
-    if (clientType == "Recurrent") {
-        finalPrice *= 0.9f;
-    }
-
     return finalPrice;
 }
 
-void PerzonalizedMassage::showInfo() {
-    cout << "Service: " << serviceName << endl;
-    cout << "Duration: " << duration << " minutes" << endl;
-    cout << "Base price: $" << basePrice << endl;
-    cout << "Hour: " << appointmentHour << endl;
+float PerzonalizedMassage::calculateFinalPrice(std::string ct) {
+    float finalPrice = basePrice;
+    if (duration > 60) {
+        finalPrice += 200;
+    }
+    if (ct == "Recurrent") {
+        finalPrice *= 0.9f;
+    }
+    return finalPrice;
+}
+
+std::string PerzonalizedMassage::showInfo() {
+    std::stringstream ss;
+    ss << "Service: " << serviceName << std::endl;
+    ss << "Duration: " << duration << " minutes" << std::endl;
+    ss << "Base price: $" << basePrice << std::endl;
+    ss << "Time: " << appointmentHour << std::endl;
 
     if (duration > 60) {
-        cout << "Note: Duration exceeds 60 minutes. Extra charge applies: $200" << endl;
+        ss << "Note: Duration exceeds 60 minutes. Surcharge applied: $200" << std::endl;
     }
 
     if (clientType == "Recurrent") {
-        cout << "Note: Recurring customer discount applied: 10%" << endl;
+        ss << "Client Type: Returning Client" << std::endl;
+        ss << "Note: Returning client discount applied: 10%" << std::endl;
+        ss << "Final Price: $" << calculateFinalPrice(clientType) << std::endl;
+    }
+    else {
+        ss << "Final Price: $" << calculateFinalPrice() << std::endl;
     }
 
-    cout << "Final price: $" << calculateFinalPrice() << endl;
-    cout << "Confirmed reservation" << endl;
-    cout << "======================================" << endl;
+    ss << "Booking Confirmed" << std::endl;
+    ss << "========================================" << std::endl;
+    return ss.str();
 }
